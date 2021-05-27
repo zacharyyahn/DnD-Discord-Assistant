@@ -16,6 +16,24 @@ client = discord.Client(intents=intents)
 """
 Called when the bot is ready. Prints a message to the console
 """
+
+def parse_roll_message(message):
+  roll_list = []
+
+  message = message[6:]
+  d_location = message.find("d")
+  if d_location == -1:
+    return ["invalid"]
+  
+  num_rolls = message[0:d_location]
+  dice_value = message[d_location+1:]
+  print("Num rolls: " + num_rolls + " Dice value: " + dice_value)
+
+  for i in range(0, int(num_rolls)):
+    roll_list.append(random.randint(1, int(dice_value)))
+
+  return roll_list
+
 @client.event
 async def on_ready(): #called when the bot is ready
   print("We have logged in as {0.user}".format(client))
@@ -32,6 +50,7 @@ async def on_message(message):
     await message.channel.send('Hello!')
 
   #The roll command lets the user roll any number of any value dice
+
   if message.content.startswith('!roll'):
     await message.channel.send("Rolling...")
 
@@ -53,6 +72,7 @@ async def on_message(message):
       if (type(roll_list[0] == type(1)) and len(roll_list) == 1):
         await message.channel.send("Your roll: " + print_string)
       #Otherwise print the list and total
+
       else: 
         await message.channel.send("Your rolls: " + print_string)
         await message.channel.send("Total: " + str(the_sum))
